@@ -1,11 +1,38 @@
-import styled from 'styled-components';
-export const Search = styled.input`
-  display: block;
-  width: 100%;
-  margin: 10px 15px;
-  padding: 10px 10px;
-  background-color: #fafafa;
-  border: 0;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-  transition: 0.3s box-shadow;
+import { styled } from 'styled-components';
+
+export const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  label {
+    font-size: 28px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+  input {
+    margin-top: 12px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    padding-right: 40px;
+    &::placeholder {
+      color: #0d2146;
+      font-style: italic;
+    }
+  }
+  button {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    margin-top: 13px;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.7;
+    }
+  }
 `;

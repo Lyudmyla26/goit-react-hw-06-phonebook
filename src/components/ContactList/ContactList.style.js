@@ -1,25 +1,62 @@
-import styled from 'styled-components';
-export const Button = styled.button`
-  appearance: none;
-  -webkit-appearance: none;
-  padding: 5px;
-  border: none;
-  background-color: #3f51b5;
-  color: #fff;
-  font-weight: 600;
-  border-radius: 5px;
-  width: 300px;
-`;
-export const Item = styled.li`
+import { styled } from 'styled-components';
+
+export const List = styled.ul`
   list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 16px;
+  li {
+    display: flex;
+    font-size: 20px;
+    font-weight: 400;
+    color: #ffffff;
+    margin-bottom: 8px;
+    width: 100%;
+    gap: 10px;
+  }
+
+  p {
+    width: 300px;
+    font-weight: 600;
+    margin-right: 10px;
+  }
+
+  span {
+    width: 300px;
+    font-weight: 500;
+  }
+  button {
+    background-color: transparent;
+    color: #ffffff;
+    border: none;
+    cursor: pointer;
+  }
+`;
+
+export const TitlesWrapper = styled.div`
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 6px 0;
+  p {
+    width: 100%;
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+  }
 `;
-export const Name = styled.p`
-  margin: 0;
+
+export const Wrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.3);
 `;
-export const List = styled.ul``;
-export const Contact = styled.p`
-  margin: 0;
+
+export const Message = styled.p`
+  margin-top: 36px;
+  font-size: 18px;
+  color: #dbd7d2;
+  font-style: italic;
 `;

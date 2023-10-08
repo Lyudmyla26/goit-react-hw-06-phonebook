@@ -1,46 +1,79 @@
-import { Formik, Field, ErrorMessage } from 'formik';
-import propTypes from 'prop-types';
-import * as Yup from 'yup';
-import { Button, Table, Phone } from './ContactForm.style';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { Form, Title } from './ContactForm.style';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { nanoid } from 'nanoid';
+import { useContacts } from 'redux/hooks';
 
-const SignupSchema = Yup.object().shape({
-  name: Yup.string()
-    .min(2, 'Too Short!')
-    .max(20, 'Too Long!')
-    .required('Required'),
-  number: Yup.string()
-    .min(8, 'Too Short!')
-    .max(11, 'Too Long!')
-    .required('Required'),
-});
-export const ContactForm = ({ onAdd }) => {
+const schema = yup
+  .object({
+    name: yup
+      .string()
+      .matches(/^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$/)
+      .required(),
+    number: yup
+      .string()
+      .matches(/^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/)
+      .required(),
+  })
+  .required();
+
+export default function AddingForm() {
+  const { addContact, contacts } = useContacts();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = newContact => {
+    const oldContact = contacts.find(
+      contact =>
+        contact.name.toLowerCase() === newContact.name.toLowerCase() ||
+        contact.number === newContact.number
+    );
+
+    if (oldContact) {
+      toast.error(`${oldContact.name} already exists`, {
+        autoClose: 2000,
+      });
+      return;
+    }
+
+    const contact = { ...newContact, id: nanoid() };
+    addContact(contact);
+
+    toast.success('Contact added successfully', {
+      position: 'top-right',
+      autoClose: 2000,
+    });
+    reset();
+  };
+
   return (
-    <Formik
-      initialValues={{
-        name: '',
-        number: '',
-      }}
-      validationSchema={SignupSchema}
-      onSubmit={(values, actions) => {
-        onAdd({ ...values });
-        actions.resetForm();
-      }}
-    >
-      <Phone>
-        <Table>
-          Name <Field name="name" placeholder="Name" />
-          <ErrorMessage name="name" />
-        </Table>
-
-        <Table>
-          Contacts <Field name="number" placeholder="contacts" />
-          <ErrorMessage name="number" />
-        </Table>
-
-        <Button type="submit">Add contact</Button>
-      </Phone>
-    </Formik>
+    <>
+      <Title>Add new contact</Title>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <label>
+          Name
+          <input {...register('name')} placeholder="Enter name" />
+          {errors.name && <span>Name is required</span>}
+        </label>
+        <label>
+          Number
+          <input {...register('number')} placeholder="xxx-xxx-xx-xx" />
+          {errors.number && <span>Number is required</span>}
+        </label>
+        <button type="submit">Add contact</button>
+        <ToastContainer />
+      </Form>
+    </>
   );
-};
-
-ContactForm.propTypes = { onAdd: propTypes.func.isRequired };
+}
