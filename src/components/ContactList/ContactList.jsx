@@ -1,49 +1,39 @@
-import { FiTrash } from 'react-icons/fi';
-import { BsPersonCircle } from 'react-icons/bs';
-import { List, Message, TitlesWrapper, Wrapper } from './ContactList.style';
-import { useContacts, useFilter } from 'redux/hooks';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getContactList, getFilter } from 'redux/selectors';
+import { deleteContact } from 'redux/contactSlice';
+
+import style from './ContactList.module.css';
 
 export const ContactList = () => {
-  const { removeContact, contacts } = useContacts();
-  const { filter } = useFilter();
+  const contacts = useSelector(getContactList);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
-  const onRemoveContact = contactId => {
-    removeContact(contactId);
+  const onDeleteContact = contactId => {
+    dispatch(deleteContact(contactId));
   };
 
-  const newList = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter)
+  const filteredContacts = contacts.filter(contact =>
+    contact.name.toLowerCase().trim().includes(filter.toLowerCase().trim())
   );
-
-  const noContactsMessage = filter
-    ? 'No contact with this name'
-    : "There are no entries in your phone book yet. It's time to add your first contact";
 
   return (
     <>
-      <Wrapper />
-      <TitlesWrapper>
-        <p>Name</p>
-        <p>Number</p>
-      </TitlesWrapper>
-      <Wrapper />
-      {newList.length > 0 && (
-        <List>
-          {newList.map(contact => {
-            return (
-              <li key={contact.id}>
-                <BsPersonCircle size={21} color="#fff" />
-                <p>{contact.name}</p>
-                <span>{contact.number}</span>
-                <button onClick={() => onRemoveContact(contact.id)}>
-                  <FiTrash size={21} />
-                </button>
-              </li>
-            );
-          })}
-        </List>
-      )}
-      {!newList.length && <Message>{noContactsMessage}</Message>}
+      {filteredContacts.length === 0 && <h2>You don't add any contacts yet</h2>}
+      <ul className={style.contact__list}>
+        {filteredContacts.map(({ name, number, id }) => {
+          return (
+            <li key={id} className={style.contact__item}>
+              <span className="name">{name}:</span>
+              <span className="phone">{number}</span>
+              <button type="button" onClick={() => onDeleteContact(id)}>
+                Delete
+              </button>
+            </li>
+          );
+        })}
+      </ul>
     </>
   );
 };

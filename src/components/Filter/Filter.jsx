@@ -1,33 +1,22 @@
-import { Wrapper } from './Filter.styled';
-import { MdOutlineClear } from 'react-icons/md';
-import { useFilter } from 'redux/hooks';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { filterByName } from 'redux/filterSlise';
+import { getFilter } from 'redux/selectors';
+
+import style from './Filter.module.css';
 
 export const Filter = () => {
-  const { searchContact, filter } = useFilter();
+  const dispatch = useDispatch();
+  const selector = useSelector(getFilter);
 
-  const onInput = event => {
-    const searchName = event.target.value.toLowerCase();
-    searchContact(searchName);
-  };
-
-  const clearInput = () => {
-    searchContact('');
+  const onFilter = e => {
+    dispatch(filterByName(e.target.value));
   };
 
   return (
-    <Wrapper>
-      <label>
-        Find contact by name
-        <input
-          type="text"
-          value={filter}
-          onChange={onInput}
-          placeholder={'search'}
-        />
-        <button onClick={clearInput}>
-          <MdOutlineClear size={21} color="#0D2146" />
-        </button>
-      </label>
-    </Wrapper>
+    <label className={style.filter__label}>
+      Find contacts by name
+      <input onChange={onFilter} type="text" name="filter" value={selector} />
+    </label>
   );
 };
