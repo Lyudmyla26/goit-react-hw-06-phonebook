@@ -93,6 +93,7 @@ export const ContactForm = () => {
               validateOnChange={true}
             />
           </label>
+          <InputField />
           <label className={style.contact__label}>
             Phone
             <InputField
